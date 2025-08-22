@@ -1,0 +1,15 @@
+[project]
+name = "backend-agenticai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.116.1",
+    "gtts>=2.5.4",
+    "httpx>=0.28.1",
+    "openai-agents>=0.2.9",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.1.1",
+    "speechrecognition>=3.14.3",
+]
