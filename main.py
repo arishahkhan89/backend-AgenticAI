@@ -76,102 +76,102 @@ You are the main restaurant assistant.
 
 
 # ---------------- AGENT ROUTE ----------------
-@app.post("/agent")
-async def ask_agent(question: str = Form(None), audio: UploadFile = File(None)):
-    try:
-        # (🎤 audio to text conversion)
-        if audio:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_audio:
-                temp_audio.write(await audio.read())
-                temp_audio_path = temp_audio.name
+# @app.post("/agent")
+# async def ask_agent(question: str = Form(None), audio: UploadFile = File(None)):
+#     try:
+#         # (🎤 audio to text conversion)
+#         if audio:
+#             with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_audio:
+#                 temp_audio.write(await audio.read())
+#                 temp_audio_path = temp_audio.name
 
-            temp_wav_path = tempfile.mktemp(suffix=".wav")
-            subprocess.run(
-                ["ffmpeg", "-y", "-i", temp_audio_path, temp_wav_path],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE
-            )
+#             temp_wav_path = tempfile.mktemp(suffix=".wav")
+#             subprocess.run(
+#                 ["ffmpeg", "-y", "-i", temp_audio_path, temp_wav_path],
+#                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
+#             )
 
-            recognizer = sr.Recognizer()
-            with sr.AudioFile(temp_wav_path) as source:
-                audio_data = recognizer.record(source)
-                question = recognizer.recognize_google(audio_data)
+#             recognizer = sr.Recognizer()
+#             with sr.AudioFile(temp_wav_path) as source:
+#                 audio_data = recognizer.record(source)
+#                 question = recognizer.recognize_google(audio_data)
 
-            os.remove(temp_audio_path)
-            os.remove(temp_wav_path)
+#             os.remove(temp_audio_path)
+#             os.remove(temp_wav_path)
 
-        if not question:
-            raise HTTPException(status_code=400, detail="No question or audio provided.")
+#         if not question:
+#             raise HTTPException(status_code=400, detail="No question or audio provided.")
 
-        # 🟢 Agent ko run karo
-        with trace("Agentic Agriculture"):  
-            result = await Runner.run(main_agent, question, run_config=run_config, context=None)
-            final_output = result.final_output
+#         # 🟢 Agent ko run karo
+#         with trace("Agentic Agriculture"):  
+#             result = await Runner.run(main_agent, question, run_config=run_config, context=None)
+#             final_output = result.final_output
 
-            # Agar dict aayi (tool ka structured response)
-            if isinstance(final_output, dict):
-                response_data = {
-                    "message": final_output.get("message", ""),
-                    "redirect": final_output.get("redirect", False),
-                    "redirect_url": final_output.get("redirect_url", None)
-                }
+#             # Agar dict aayi (tool ka structured response)
+#             if isinstance(final_output, dict):
+#                 response_data = {
+#                     "message": final_output.get("message", ""),
+#                     "redirect": final_output.get("redirect", False),
+#                     "redirect_url": final_output.get("redirect_url", None)
+#                 }
 
-            # Agar sirf string aayi
-            elif isinstance(final_output, str):
-                response_data = {
-                    "message": final_output,
-                    "redirect": False,
-                    "redirect_url": None
-                }
+#             # Agar sirf string aayi
+#             elif isinstance(final_output, str):
+#                 response_data = {
+#                     "message": final_output,
+#                     "redirect": False,
+#                     "redirect_url": None
+#                 }
 
-            # 👇 Yahan force redirect logic lagao
-            question_lower = question.lower()
+#             # 👇 Yahan force redirect logic lagao
+#             question_lower = question.lower()
 
-            # Menu ke liye
-            if "menu" in question_lower or "show menu" in question_lower or "mujhe menu" in question_lower:
-                response_data["redirect"] = True
-                response_data["redirect_url"] = "/menu"
+#             # Menu ke liye
+#             if "menu" in question_lower or "show menu" in question_lower or "mujhe menu" in question_lower:
+#                 response_data["redirect"] = True
+#                 response_data["redirect_url"] = "/menu"
 
-            # Order confirmation ke liye
-            elif (
-                "order" in question_lower 
-                or "order confirmation" in question_lower 
-                or "my order" in question_lower 
-                or "mera order" in question_lower
-            ):
-                response_data["redirect"] = True
-                response_data["redirect_url"] = "/order_summary"
+#             # Order confirmation ke liye
+#             elif (
+#                 "order" in question_lower 
+#                 or "order confirmation" in question_lower 
+#                 or "my order" in question_lower 
+#                 or "mera order" in question_lower
+#             ):
+#                 response_data["redirect"] = True
+#                 response_data["redirect_url"] = "/order_summary"
 
-            # Agar unknown type ho
-            else:
-                response_data = {
-                    "message": str(final_output),
-                    "redirect": False,
-                    "redirect_url": None
-                }
-
-
-        # 🎤 TTS - hamesha message ko speech banao
-        tts = gTTS(response_data["message"], lang="en")
-        audio_file_path = os.path.join(
-            tempfile.gettempdir(), next(tempfile._get_candidate_names()) + ".mp3"
-        )
-        tts.save(audio_file_path)
-
-        response_data["audio_url"] = f"/agent-audio?file={os.path.basename(audio_file_path)}"
-
-        return response_data
-
-    except Exception as e:
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+#             # Agar unknown type ho
+#             else:
+#                 response_data = {
+#                     "message": str(final_output),
+#                     "redirect": False,
+#                     "redirect_url": None
+#                 }
 
 
-@app.get("/agent-audio")
-async def get_agent_audio(file: str):
-    file_path = os.path.join(tempfile.gettempdir(), file)
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="Audio file not found")
-    return FileResponse(file_path, media_type="audio/mpeg", filename=file)
+#         # 🎤 TTS - hamesha message ko speech banao
+#     #     tts = gTTS(response_data["message"], lang="en")
+#     #     audio_file_path = os.path.join(
+#     #         tempfile.gettempdir(), next(tempfile._get_candidate_names()) + ".mp3"
+#     #     )
+#     #     tts.save(audio_file_path)
+
+#     #     response_data["audio_url"] = f"/agent-audio?file={os.path.basename(audio_file_path)}"
+
+#     #     return response_data
+
+#     # except Exception as e:
+#     #     traceback.print_exc()
+#     #     raise HTTPException(status_code=500, detail=str(e))
+
+
+# @app.get("/agent-audio")
+# async def get_agent_audio(file: str):
+#     file_path = os.path.join(tempfile.gettempdir(), file)
+#     if not os.path.exists(file_path):
+#         raise HTTPException(status_code=404, detail="Audio file not found")
+#     return FileResponse(file_path, media_type="audio/mpeg", filename=file)
 
 
 # ---------------- SERVER ----------------
