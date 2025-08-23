@@ -18,7 +18,6 @@ from agents import (
     RunContextWrapper, function_tool, trace
 )
 from agents.run import RunConfig
-import re
 
 # ---------------- ENV & CONFIG ----------------
 load_dotenv()
@@ -44,23 +43,16 @@ model = OpenAIChatCompletionsModel(
 )
 run_config = RunConfig(model=model, model_provider=external_client)
 
-# ---------------- Helper Function ----------------
-def extract_location(question: str) -> str | None:
-    """Extract city/location from question text."""
-    match = re.search(r"\b(?:in|for|at)\s+([A-Za-z\s]+)", question.lower())
-    if match:
-        return match.group(1).strip().title()
-    return None
+# =====================================Function Tools ========================
 
-# ---------------- Function Tools ----------------
 @function_tool
 async def greet_user(wrapper: RunContextWrapper[None]) -> str:
-    print("🔹 greet_user tool called")
+    print("🔹 greet_user tool called")  # Debug
     return "Hello! Welcome to Smart Agri. Have a great day. Farm-Genie here.. What would you like to ask?"
 
 @function_tool
 async def show_irrigation_advice(wrapper: RunContextWrapper[None]) -> dict:
-    print("🔹 show_irrigation_advice tool called")
+    print("🔹 show_irrigation_advice tool called")  # Debug
     return {"message": "Ok, I am providing you the irrigation agent you can ask him your query.", "redirect": True, "redirect_url": "/irrigation_advice"}
 
 @function_tool
@@ -113,31 +105,32 @@ async def get_weather_and_soil(location: str) -> dict:
         print(f"❌ Error in get_weather_and_soil: {e}")
         return {"error": str(e)}
 
-# ---------------- Agents ----------------
+# ============================ Agents ========================================
+
 greeting_agent = Agent[None](
     name="Greeting Assistant",
-    instructions="Handle greetings only.",
+    instructions="""You are a Greeting Assistant. Handle greetings only.""",
     model=model,
     tools=[greet_user]
 )
 
 irrigation_agent = Agent[None](
     name="Irrigation Assistant",
-    instructions="Handle generic irrigation requests and redirect to advice.",
+    instructions="""Handle generic irrigation requests and redirect to advice.""",
     model=model,
     tools=[show_irrigation_advice]
 )
 
 irrigation_advice_agent = Agent[None](
     name="Smart Irrigation Advice Agent",
-    instructions="Handle detailed irrigation advice with weather and soil data.",
+    instructions="""Handle detailed irrigation advice with weather and soil data.""",
     model=model,
     tools=[get_weather_and_soil]
 )
 
 main_agent = Agent[None](
     name="Main Agriculture Agent",
-    instructions="Route greetings and irrigation queries to appropriate agents.",
+    instructions="""Route greetings and irrigation queries to appropriate agents.""",
     model=model,
     tools=[],
     handoffs=[greeting_agent, irrigation_agent, irrigation_advice_agent]
@@ -172,37 +165,30 @@ async def ask_agent(question: str = Form(None), audio: UploadFile = File(None)):
             raise HTTPException(status_code=400, detail="No question or audio provided.")
 
         print(f"🔹 User question: {question}")
-        location = extract_location(question)
-        if location:
-            print(f"🔹 Detected location: {location}")
-            weather_soil_data = await get_weather_and_soil(location)
-            advice_message = weather_soil_data.get("advice", "No advice available")
-            response_data = {
-                "message": f"Irrigation advice for {location}: {advice_message}",
-                "redirect": False,
-                "redirect_url": None
-            }
-        else:
-            # Fallback to agent handoff
-            with trace("Agentic Agriculture"):
-                result = await Runner.run(main_agent, question, run_config=run_config, context=None)
-                final_output = result.final_output
-                print(f"🔹 Agent final output: {final_output}")
+        with trace("Agentic Agriculture"):  
+            result = await Runner.run(main_agent, question, run_config=run_config, context=None)
+            final_output = result.final_output
+            print(f"🔹 Agent final output: {final_output}")
 
-                if isinstance(final_output, dict):
-                    response_data = {
-                        "message": final_output.get("message", ""),
-                        "redirect": final_output.get("redirect", False),
-                        "redirect_url": final_output.get("redirect_url", None)
-                    }
-                elif isinstance(final_output, str):
-                    response_data = {
-                        "message": final_output,
-                        "redirect": False,
-                        "redirect_url": None
-                    }
-                else:
-                    response_data = {"message": "Unexpected response", "redirect": False, "redirect_url": None}
+            if isinstance(final_output, dict):
+                response_data = {
+                    "message": final_output.get("message", ""),
+                    "redirect": final_output.get("redirect", False),
+                    "redirect_url": final_output.get("redirect_url", None)
+                }
+            elif isinstance(final_output, str):
+                response_data = {
+                    "message": final_output,
+                    "redirect": False,
+                    "redirect_url": None
+                }
+            else:
+                response_data = {"message": "Unexpected response", "redirect": False, "redirect_url": None}
+
+            question_lower = question.lower()
+            if "irrigation" in question_lower or "tell me irrigation" in question_lower or "mujhe irrigation" in question_lower:
+                response_data["redirect"] = True
+                response_data["redirect_url"] = "/irrigation_advice"
 
         tts = gTTS(response_data["message"], lang="en")
         audio_file_path = os.path.join(tempfile.gettempdir(), next(tempfile._get_candidate_names()) + ".mp3")
@@ -215,7 +201,6 @@ async def ask_agent(question: str = Form(None), audio: UploadFile = File(None)):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
-# ---------------- AUDIO ROUTE ----------------
 @app.get("/agent-audio")
 async def get_agent_audio(file: str):
     file_path = os.path.join(tempfile.gettempdir(), file)
