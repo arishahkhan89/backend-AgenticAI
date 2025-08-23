@@ -1,6 +1,0 @@
-fastapi
-uvicorn
-pydantic
-gtts
-speechrecognition
-httpx
