@@ -1,0 +1,302 @@
+[
+  {
+    "location": "Lahore",
+    "soil": {
+      "moisture": 22,
+      "ph": 6.5,
+      "nitrogen": "medium",
+      "phosphorus": "low",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Karachi",
+    "soil": {
+      "moisture": 35,
+      "ph": 7.1,
+      "nitrogen": "low",
+      "phosphorus": "medium",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Islamabad",
+    "soil": {
+      "moisture": 28,
+      "ph": 6.8,
+      "nitrogen": "high",
+      "phosphorus": "high",
+      "potassium": "low"
+    }
+  },
+  {
+    "location": "Faisalabad",
+    "soil": {
+      "moisture": 30,
+      "ph": 6.9,
+      "nitrogen": "medium",
+      "phosphorus": "low",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Multan",
+    "soil": {
+      "moisture": 25,
+      "ph": 7.0,
+      "nitrogen": "high",
+      "phosphorus": "medium",
+      "potassium": "low"
+    }
+  },
+  {
+    "location": "Peshawar",
+    "soil": {
+      "moisture": 33,
+      "ph": 6.7,
+      "nitrogen": "low",
+      "phosphorus": "high",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Quetta",
+    "soil": {
+      "moisture": 18,
+      "ph": 7.3,
+      "nitrogen": "medium",
+      "phosphorus": "low",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Sialkot",
+    "soil": {
+      "moisture": 29,
+      "ph": 6.6,
+      "nitrogen": "high",
+      "phosphorus": "medium",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Hyderabad",
+    "soil": {
+      "moisture": 31,
+      "ph": 7.2,
+      "nitrogen": "low",
+      "phosphorus": "high",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Sukkur",
+    "soil": {
+      "moisture": 27,
+      "ph": 6.9,
+      "nitrogen": "medium",
+      "phosphorus": "medium",
+      "potassium": "low"
+    }
+  },
+  {
+    "location": "Bahawalpur",
+    "soil": {
+      "moisture": 24,
+      "ph": 7.0,
+      "nitrogen": "high",
+      "phosphorus": "low",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Rawalpindi",
+    "soil": {
+      "moisture": 32,
+      "ph": 6.8,
+      "nitrogen": "low",
+      "phosphorus": "high",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Gujranwala",
+    "soil": {
+      "moisture": 28,
+      "ph": 7.1,
+      "nitrogen": "medium",
+      "phosphorus": "medium",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Sargodha",
+    "soil": {
+      "moisture": 26,
+      "ph": 6.7,
+      "nitrogen": "high",
+      "phosphorus": "low",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Mardan",
+    "soil": {
+      "moisture": 21,
+      "ph": 6.9,
+      "nitrogen": "low",
+      "phosphorus": "high",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Abbottabad",
+    "soil": {
+      "moisture": 34,
+      "ph": 6.5,
+      "nitrogen": "medium",
+      "phosphorus": "medium",
+      "potassium": "low"
+    }
+  },
+  {
+    "location": "Gwadar",
+    "soil": {
+      "moisture": 20,
+      "ph": 7.4,
+      "nitrogen": "low",
+      "phosphorus": "medium",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Kasur",
+    "soil": {
+      "moisture": 30,
+      "ph": 7.0,
+      "nitrogen": "high",
+      "phosphorus": "low",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Okara",
+    "soil": {
+      "moisture": 27,
+      "ph": 6.8,
+      "nitrogen": "medium",
+      "phosphorus": "high",
+      "potassium": "low"
+    }
+  },
+  {
+    "location": "Sheikhupura",
+    "soil": {
+      "moisture": 23,
+      "ph": 7.2,
+      "nitrogen": "low",
+      "phosphorus": "medium",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Jhang",
+    "soil": {
+      "moisture": 25,
+      "ph": 6.9,
+      "nitrogen": "medium",
+      "phosphorus": "low",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Chiniot",
+    "soil": {
+      "moisture": 29,
+      "ph": 6.7,
+      "nitrogen": "high",
+      "phosphorus": "medium",
+      "potassium": "low"
+    }
+  },
+  {
+    "location": "Rahim Yar Khan",
+    "soil": {
+      "moisture": 32,
+      "ph": 7.1,
+      "nitrogen": "medium",
+      "phosphorus": "high",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Kohat",
+    "soil": {
+      "moisture": 21,
+      "ph": 7.0,
+      "nitrogen": "low",
+      "phosphorus": "low",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Dera Ghazi Khan",
+    "soil": {
+      "moisture": 33,
+      "ph": 6.6,
+      "nitrogen": "medium",
+      "phosphorus": "medium",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Mansehra",
+    "soil": {
+      "moisture": 28,
+      "ph": 6.5,
+      "nitrogen": "high",
+      "phosphorus": "low",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Swat",
+    "soil": {
+      "moisture": 35,
+      "ph": 6.7,
+      "nitrogen": "low",
+      "phosphorus": "high",
+      "potassium": "medium"
+    }
+  },
+  {
+    "location": "Mingora",
+    "soil": {
+      "moisture": 19,
+      "ph": 7.3,
+      "nitrogen": "medium",
+      "phosphorus": "medium",
+      "potassium": "low"
+    }
+  },
+  {
+    "location": "Gilgit",
+    "soil": {
+      "moisture": 24,
+      "ph": 7.1,
+      "nitrogen": "high",
+      "phosphorus": "low",
+      "potassium": "high"
+    }
+  },
+  {
+    "location": "Skardu",
+    "soil": {
+      "moisture": 26,
+      "ph": 6.8,
+      "nitrogen": "medium",
+      "phosphorus": "high",
+      "potassium": "low"
+    }
+  }
+]
